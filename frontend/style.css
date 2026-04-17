@@ -1,0 +1,158 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, darkblue, navy);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    color: darkblue;
+    margin-bottom: 10px;
+    font-size: 28px;
+    text-align: center;
+}
+
+.subtitle {
+    color: gray;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: darkslategray;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid lightblue;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: dodgerblue;
+    box-shadow: 0 0 8px rgba(30, 144, 255, 0.3);
+}
+
+.button {
+    width: 100%;
+    padding: 12px;
+    background-color: dodgerblue;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-bottom: 20px;
+}
+
+.button:hover {
+    background-color: steelblue;
+    transform: translateY(-2px);
+}
+
+.button:active {
+    transform: translateY(0);
+}
+
+.result-hidden {
+    display: none;
+    padding: 20px;
+    background-color: lightgreen;
+    border-radius: 8px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.result-hidden.show {
+    display: block;
+}
+
+.error-hidden {
+    display: none;
+    padding: 20px;
+    background-color: lightcoral;
+    border-radius: 8px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.error-hidden.show {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.result-label {
+    color: darkgreen;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+#error-message {
+    color: darkred;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.distance-value {
+    color: darkgreen;
+    font-size: 36px;
+    font-weight: bold;
+    margin: 0;
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Distance Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Edit Distance Calculator</h1>
+            <p class="subtitle">Calculate Levenshtein distance between two strings</p>
+            
+            <div class="input-group">
+                <label for="string1">String 1:</label>
+                <input type="text" id="string1" placeholder="Enter first string" class="input-field">
+            </div>
+            
+            <div class="input-group">
+                <label for="string2">String 2:</label>
+                <input type="text" id="string2" placeholder="Enter second string" class="input-field">
+            </div>
+            
+            <button onclick="calculateDistance()" class="button">Calculate Distance</button>
+            
+            <div id="result" class="result-hidden">
+                <p class="result-label">Edit Distance:</p>
+                <p id="distance-value" class="distance-value">0</p>
+            </div>
+            
+            <div id="error" class="error-hidden">
+                <p id="error-message">Error occurred</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

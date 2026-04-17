@@ -64,14 +64,14 @@ int main() {
     }
 
     int reuse = 1;
-setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+    setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 
     struct sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = INADDR_ANY;
-    serverAddr.sin_port = htons(10000);  // Render port $PORT or 10000
+    serverAddr.sin_port = htons(10000);
 
-bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr))
+    if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
         cerr << "Bind failed" << endl;
         close(serverSocket);
         return 1;
@@ -83,7 +83,7 @@ bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr))
     while (true) {
         struct sockaddr_in clientAddr;
         socklen_t clientLen = sizeof(clientAddr);
-accept(serverSocket, (struct sockaddr*)&clientAddr, &clientLen);
+        int clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientLen);
         if (clientSocket == -1) continue;
 
         char buffer[4096];
@@ -99,12 +99,12 @@ accept(serverSocket, (struct sockaddr*)&clientAddr, &clientLen);
         string method, path, dummy;
         ss >> method >> path;
 
-if (method == "OPTIONS" && path == "/calculate") {
+        if (method == "OPTIONS" && path == "/calculate") {
             string response = makeResponse("HTTP/1.1 200 OK", "application/json", "");
             send(clientSocket, response.c_str(), response.length(), 0);
             close(clientSocket);
             continue;
-        } else if (method == "POST" &amp;&amp; path == "/calculate") {
+        } else if (method == "POST" && path == "/calculate") {
             size_t bodyStart = request.find("\r\n\r\n");
             if (bodyStart != string::npos) {
                 string body = request.substr(bodyStart + 4);
@@ -115,7 +115,7 @@ if (method == "OPTIONS" && path == "/calculate") {
                 size_t s1End = body.find("\"", s1Start);
                 size_t s2End = body.find("\"", s2Start);
 
-if (s1End != string::npos && s2End != string::npos) {
+                if (s1End != string::npos && s2End != string::npos) {
                     string s1 = body.substr(s1Start, s1End - s1Start);
                     string s2 = body.substr(s2Start, s2End - s2Start);
                     

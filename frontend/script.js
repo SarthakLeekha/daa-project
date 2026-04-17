@@ -43,7 +43,7 @@ const response = await fetch(`/calculate`, {
         resultDiv.classList.add('show');
         
     } catch (error) {
-errorMessage.textContent = 'Server error. Try again.';
+errorMessage.textContent = 'Error connecting to server. Try again.';
         errorDiv.classList.add('show');
     }
 }

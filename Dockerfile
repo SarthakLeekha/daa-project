@@ -1,16 +1,13 @@
 FROM ubuntu:22.04
 
-# Install g++ and libs
-RUN apt-get update &amp;&amp; apt-get install -y g++ &amp;&amp; rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y g++ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy source
-COPY backend/server.cpp .
+COPY . .
 
-# Compile for Linux (remove winsock2, add simple handling? Wait, full port needed.
+RUN g++ backend/server_linux.cpp -o server -std=c++11 -pthread
 
-# Temp: Note - server.cpp is Windows-only (winsock2). Needs port to Linux (use <sys/socket.h> etc).
-# For demo: Compile if ported, CMD ["./server"]
+EXPOSE 5000
 
-CMD ["echo", "Server ready on port 5000 - port server.cpp to Linux"]
+CMD ["./server"]

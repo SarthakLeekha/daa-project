@@ -27,27 +27,13 @@ async function calculateDistance() {
         });
         
         
-        const tryFetch = async (port) => {
-            return await fetch(`http://127.0.0.1:${port}/calculate`, {
+const response = await fetch(`/calculate`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: payload
             });
-        };
-
-        let response = null;
-        try {
-            response = await tryFetch(5000);
-            if (!response.ok) {
-                // try fallback port
-                response = await tryFetch(8080);
-            }
-        } catch (e) {
-            // try fallback port
-            response = await tryFetch(8080);
-        }
         if (!response || !response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -57,7 +43,7 @@ async function calculateDistance() {
         resultDiv.classList.add('show');
         
     } catch (error) {
-        errorMessage.textContent = 'Error connecting to server. Make sure backend is running on port 5000';
+errorMessage.textContent = 'Server error. Try again.';
         errorDiv.classList.add('show');
     }
 }

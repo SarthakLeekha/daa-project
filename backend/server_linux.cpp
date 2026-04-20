@@ -58,7 +58,7 @@ string makeResponse(const string & status, const string & contentType, const str
 }
 
 int main() {
-    char* portStr = getenv("PORT");
+    const char* portStr = getenv("PORT");
     if (!portStr) portStr = "10000";
     int port = atoi(portStr);
     
@@ -120,26 +120,38 @@ int main() {
             if (bodyStart != string::npos) {
                 string body = request.substr(bodyStart + 4);
 
-                size_t s1Start = body.find("\"s1\":\"") + 6;
-                size_t s2Start = body.find("\"s2\":\"") + 6;
+                size_t s1Start = body.find("\"s1\":\"");
+                size_t s2Start = body.find("\"s2\":\"");
                 
-                size_t s1End = body.find("\"", s1Start);
-                size_t s2End = body.find("\"", s2Start);
+                if (s1Start != string::npos && s2Start != string::npos) {
+                    s1Start += 6;
+                    size_t s1End = body.find("\"", s1Start);
+                    s2Start += 6;
+                    size_t s2End = body.find("\"", s2Start);
 
-                if (s1End != string::npos && s2End != string::npos) {
-                    string s1 = body.substr(s1Start, s1End - s1Start);
-                    string s2 = body.substr(s2Start, s2End - s2Start);
-                    
-                    int distance = editDistance(s1, s2);
-                    
-                    string responseBody = "{\"distance\":" + to_string(distance) + "}";
-                    string response = makeResponse("HTTP/1.1 200 OK", "application/json", responseBody);
-                    send(clientSocket, response.c_str(), response.length(), 0);
+                    if (s1End != string::npos && s2End != string::npos) {
+                        string s1 = body.substr(s1Start, s1End - s1Start);
+                        string s2 = body.substr(s2Start, s2End - s2Start);
+                        
+                        int distance = editDistance(s1, s2);
+                        
+                        string responseBody = "{\"distance\":" + to_string(distance) + "}";
+                        string response = makeResponse("HTTP/1.1 200 OK", "application/json", responseBody);
+                        send(clientSocket, response.c_str(), response.length(), 0);
+                    } else {
+                        string responseBody = "{\"error\":\"Invalid JSON\"}";
+                        string response = makeResponse("HTTP/1.1 400 Bad Request", "application/json", responseBody);
+                        send(clientSocket, response.c_str(), response.length(), 0);
+                    }
                 } else {
-                    string responseBody = "{\"error\":\"Invalid JSON\"}";
+                    string responseBody = "{\"error\":\"Missing s1 or s2\"}";
                     string response = makeResponse("HTTP/1.1 400 Bad Request", "application/json", responseBody);
                     send(clientSocket, response.c_str(), response.length(), 0);
                 }
+            } else {
+                string responseBody = "{\"error\":\"No body\"}";
+                string response = makeResponse("HTTP/1.1 400 Bad Request", "application/json", responseBody);
+                send(clientSocket, response.c_str(), response.length(), 0);
             }
             close(clientSocket);
             continue;
@@ -163,15 +175,16 @@ int main() {
             string header = "HTTP/1.1 200 OK\r\nContent-Type: " + cType + "\r\nConnection: close\r\n\r\n";
             string response = header + body;
             send(clientSocket, response.c_str(), response.length(), 0);
+            close(clientSocket);
+            continue;
         } else {
             string response = "HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\nNot found";
             send(clientSocket, response.c_str(), response.length(), 0);
+            close(clientSocket);
         }
         
         close(clientSocket);
     }
-
     close(serverSocket);
     return 0;
 }
-

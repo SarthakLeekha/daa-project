@@ -120,11 +120,14 @@ int main() {
             if (bodyStart != string::npos) {
                 string body = request.substr(bodyStart + 4);
 
-                size_t s1Start = body.find("\"s1\":\"") + 6;
-                size_t s2Start = body.find("\"s2\":\"") + 6;
+                size_t s1Start = body.find("\"s1\":\"");
+                size_t s2Start = body.find("\"s2\":\"");
                 
-                size_t s1End = body.find("\"", s1Start);
-                size_t s2End = body.find("\"", s2Start);
+                if (s1Start != string::npos && s2Start != string::npos) {
+                    s1Start += 6;
+                    size_t s1End = body.find("\"", s1Start);
+                    s2Start += 6;
+                    size_t s2End = body.find("\"", s2Start);
 
                 if (s1End != string::npos && s2End != string::npos) {
                     string s1 = body.substr(s1Start, s1End - s1Start);

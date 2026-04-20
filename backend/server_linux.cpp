@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <vector>
 #include <fstream>
+#include <cstdlib>  // for getenv, atoi
 
 using namespace std;
 
@@ -57,6 +58,12 @@ string makeResponse(const string & status, const string & contentType, const str
 }
 
 int main() {
+    char* portStr = getenv("PORT");
+    if (!portStr) portStr = "10000";
+    int port = atoi(portStr);
+    
+    cout << "Using PORT=" << port << endl;
+    
     int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1) {
         cerr << "Socket creation failed" << endl;
@@ -69,16 +76,16 @@ int main() {
     struct sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = INADDR_ANY;
-    serverAddr.sin_port = htons(10000);
+    serverAddr.sin_port = htons(port);
 
     if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1) {
-        cerr << "Bind failed" << endl;
+        cerr << "Bind failed on port " << port << endl;
         close(serverSocket);
         return 1;
     }
 
     listen(serverSocket, SOMAXCONN);
-    cout << "Linux Server listening on port 10000" << endl;
+    cout << "Linux Server listening on 0.0.0.0:" << port << endl;
 
     while (true) {
         struct sockaddr_in clientAddr;
@@ -95,9 +102,13 @@ int main() {
         buffer[received] = '\0';
         string request(buffer);
 
+        cout << "=== Request ===" << endl;
+        cout << request.substr(0, 500) << endl;  // Log first 500 chars
+        
         stringstream ss(request);
         string method, path, dummy;
         ss >> method >> path;
+        cout << "Method: " << method << ", Path: " << path << endl;
 
         if (method == "OPTIONS" && path == "/calculate") {
             string response = makeResponse("HTTP/1.1 200 OK", "application/json", "");

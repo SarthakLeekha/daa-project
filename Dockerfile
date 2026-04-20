@@ -8,6 +8,6 @@ COPY . .
 
 RUN g++ backend/server_linux.cpp -o server -std=c++11 -pthread
 
-EXPOSE 5000
+EXPOSE $PORT
 
 CMD ["./server"]
